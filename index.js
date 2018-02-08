@@ -3,7 +3,9 @@ const path = require('path')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const request = require('request')
 
+const apiKey = 'x_SjkhJeP6sge5mL1yCf'
 
 // set the view engine to ejs
 app.set('view engine', 'ejs')
@@ -48,10 +50,15 @@ app.get('/tickerlist',(req,res)=>{
 })
 
 app.post('/getticker',(req,res)=>{
-    if (req.body.ticker){
-        //res.send('Selected ticker: ' + req.body.ticker)
+    data = req.body.ticker
+    ticker = data.toString().substr(0, data.indexOf('-')).trim()
+    if (ticker){
+        res.send('Selected ticker: ' + ticker)
         console.log(req.body.ticker)
         //res.redirect('/')
+        fetchTickerData(ticker,function () {
+            res.send(getChartData())
+        })
     }
     else{
         res.send('it\'s not working!')
@@ -77,3 +84,35 @@ function fetchTickers() {
     return NSEtickers;
 }
 
+function fetchTickerData(ticker,callback) {
+    ticker = 'NSE/' + ticker
+    //ticker = NSEtickers[1][0]
+
+    //https://www.quandl.com/api/v3/datasets/NSE/OSWALAGRO?api_key=x_SjkhJeP6sge5mL1yCf
+    var url = 'https://www.quandl.com/api/v3/datasets/' + ticker + '/data.json?api_key=' + apiKey
+    console.log(url)
+
+    proxyUrl = 'http://proxy.intra.bt.com:8080'
+    options = {
+        url: url,
+        proxy: proxyUrl,
+        headers: {
+            'User-Agent': "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/527  (KHTML, like Gecko, Safari/419.3) Arora/0.6 (Change: )"
+        }
+    }
+    var file = fs.createWriteStream("./Data/data.json");
+    request(options, function (err, resp, body) {
+        console.log(resp)
+    }).pipe(file,function () {
+        console.log('File pipe complete!')
+        callback        
+    })
+}
+
+function getChartData() {
+    var dataContents = fs.readFileSync('./data/data.json');
+    data = JSON.parse(dataContents)
+    console.log(data.dataset_data.data)
+
+    return data
+}
