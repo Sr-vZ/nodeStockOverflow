@@ -1,2 +1,2 @@
 
-POST http://127.0.0.1:8180/
+POST http://127.0.0.1:8180/getticker

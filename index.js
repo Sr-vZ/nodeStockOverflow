@@ -4,6 +4,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const request = require('request')
+const _ =require('lodash')
 
 const apiKey = 'x_SjkhJeP6sge5mL1yCf'
 
@@ -68,7 +69,10 @@ app.post('/getticker',(req,res)=>{
                 cdata[i]= data[i][5] //closing data
             }
             
-            res.render('analysis',{labels:labels,data:cdata})
+            labels = _.reverse(labels) //chronological order
+            cdata = _.reverse(cdata)    //chronological order
+
+            res.render('analysis',{labels:labels,data:cdata,ticker:ticker})
         })
     }
     else{

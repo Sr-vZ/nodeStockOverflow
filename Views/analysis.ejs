@@ -51,28 +51,31 @@
             <%- include('partials/footer') %>
     </div>
 <script>
-function drawGraph(){
+function drawGraph(x,y,tag){
     var ctx = document.getElementById('myChart');
     var myChart = new Chart(ctx, {
     type: 'line',
     data: {
-    labels: <%- JSON.stringify(labels); %>,
+    labels: x,
   datasets: [
       {
-        label: "My First dataset",
+        label: tag,
         backgroundColor: "rgba(255,99,132,0.2)",
         borderColor: "rgba(255,99,132,1)",
         borderWidth: 2,
         hoverBackgroundColor: "rgba(255,99,132,0.4)",
         hoverBorderColor: "rgba(255,99,132,1)",
-        data: <%- JSON.stringify(data); %>,
+        data: y,
      }
   ]
     }
     });
 }
 $(document).ready(function(){
-    drawGraph();
+    date = <%- JSON.stringify(labels); %>;
+    closingPrice = <%- JSON.stringify(data); %>;
+    ticker = <%- JSON.stringify(ticker); %>
+    drawGraph(date,closingPrice,ticker);
 })
 </script>
 </body>
