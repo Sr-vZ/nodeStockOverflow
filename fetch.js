@@ -6,6 +6,7 @@ const fs = require('fs'),
 const apiKey ='x_SjkhJeP6sge5mL1yCf'
 
 var NSEtickers = [];
+var data = [];
 
 
 
@@ -60,12 +61,29 @@ function fetchTickerData(ticker) {
         }
     }
     var file = fs.createWriteStream("./Data/data.json");
-    request(options, function (err, resp, body) {
-        console.log(body)
+    var process = request(options, function (err, resp, body) {
+        //console.log(body)
     }).pipe(file)
+
+    
 }
 
 //fetchTickerData(NSEtickers[5][0])
-var dataContents = fs.readFileSync('./data/data.json');
-data = JSON.parse(dataContents)
-console.log(data.dataset_data.data)
+
+/* fetchTickerData(NSEtickers[5][0],function () {
+    var dataContents = fs.readFileSync('./data/data.json');
+    data = JSON.parse(dataContents)
+    console.log(data.dataset_data.data)
+})
+ */
+
+function getChartData() {
+    var dataContents = fs.readFileSync('./data/data.json');
+    data = JSON.parse(dataContents)
+    console.log(data.dataset_data.data)
+
+    return data
+}
+
+getChartData()
+console.log(data.dataset_data.data.length)

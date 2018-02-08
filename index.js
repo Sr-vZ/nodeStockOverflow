@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
     // render `home.ejs` with the list of posts
     data = fetchTickers()
     res.render('home', {tickers: data })
-    res.end()
+    
 })
 
 // blog post
@@ -53,11 +53,22 @@ app.post('/getticker',(req,res)=>{
     data = req.body.ticker
     ticker = data.toString().substr(0, data.indexOf('-')).trim()
     if (ticker){
-        res.send('Selected ticker: ' + ticker)
+        //res.send('Selected ticker: ' + ticker)
         console.log(req.body.ticker)
         //res.redirect('/')
         fetchTickerData(ticker,function () {
-            res.send(getChartData())
+            //res.send(JSON.stringify(getChartData()))
+            //console.log(getChartData())
+            var labels=[],cdata = [];
+            data = getChartData()
+            data = data.dataset_data.data
+            l = data.length
+            for(i=0;i<l;i++){
+                labels[i] = data[i][0] //dates
+                cdata[i]= data[i][5] //closing data
+            }
+            
+            res.render('analysis',{labels:labels,data:cdata})
         })
     }
     else{
@@ -100,12 +111,14 @@ function fetchTickerData(ticker,callback) {
             'User-Agent': "Mozilla/5.0 (Windows; U; Windows NT 6.0; en-US) AppleWebKit/527  (KHTML, like Gecko, Safari/419.3) Arora/0.6 (Change: )"
         }
     }
-    var file = fs.createWriteStream("./Data/data.json");
-    request(options, function (err, resp, body) {
+    var file = fs.createWriteStream("./data/data.json");
+    var fetchprocess = request(options, function (err, resp, body) {
         console.log(resp)
-    }).pipe(file,function () {
-        console.log('File pipe complete!')
-        callback        
+    }).pipe(file)
+
+    fetchprocess.on('finish',function () {
+        console.log('piping finished!')
+        callback()
     })
 }
 
