@@ -51,8 +51,10 @@
                         
                     </div>
                 </form>
-                <div class="">
-                        <canvas id="myChart" width="400" height="400"></canvas>
+                <div class="ui">
+                        <% if (!typeof labels === 'undefined' ) { %>
+                            <%- include('partials/graph') %>
+                        <% } %>                        
                 </div>
                 
                 <div class="list-group">

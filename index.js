@@ -13,7 +13,7 @@ app.set('view engine', 'ejs')
 //app.all('/', routes.index)
 
 
-
+var tickerlist = fetchTickers();
 
 
 app.use(bodyParser.json()); // support json encoded bodies
