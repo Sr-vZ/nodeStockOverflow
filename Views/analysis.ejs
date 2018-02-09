@@ -60,6 +60,7 @@
             <%- include('partials/footer') %>
     </div>
 <script>
+var d,c;
 function drawGraph(x,y,tag){
     var ctx = document.getElementById('myChart');
     var myChart = new Chart(ctx, {
@@ -84,10 +85,10 @@ $(document).ready(function(){
     dateJSON = <%- JSON.stringify(labels); %>;
     closingPriceJSON = <%- JSON.stringify(data); %>;
     ticker = <%- JSON.stringify(ticker); %>
-    drawGraph(date,closingPrice,ticker);
+    drawGraph(dateJSON,closingPriceJSON,ticker);
 
-    len = date.length;
-
+    len = dateJSON.length;
+    
     $('#btn5D').on('click',function(){
         date = dateJSON;
         closingPrice = closingPriceJSON;
